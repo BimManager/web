@@ -10,7 +10,7 @@ module.exports =
 	callback_url: process.env.FORGE_CALLBACK_URL
     },
     scope: {
-	internal: ["bucket:create", "bucket:read", "data:read", "data:create", "data:write"]
+	internal: ["bucket:create", "bucket:read", "data:read", "data:create", "data:write"],
 	public: ["viewables:read"]
     }
 }
