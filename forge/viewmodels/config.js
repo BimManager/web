@@ -9,7 +9,7 @@ module.exports =
 	client_secret: process.env.FORGE_CLIENT_SECRET,
 	callback_url: process.env.FORGE_CALLBACK_URL
     },
-    scope: {
+    scopes: {
 	internal: ["bucket:create", "bucket:read", "data:read", "data:create", "data:write"],
 	public: ["viewables:read"]
     }
