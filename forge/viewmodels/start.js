@@ -19,7 +19,7 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use(express.json({ limit: "50mb" }));
 app.use("/api/forge/oauth", require("./routes/oauth"));
 app.use("/api/forge/oss", require("./routes/oss"));
-app.use("/api/forge/modelderivative", require("./route/modelderivative"));
+app.use("/api/forge/modelderivative", require("./routes/modelderivative"));
 app.use((err, req, res, next) =>
     {
 	console.error(err);

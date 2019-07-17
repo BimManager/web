@@ -26,25 +26,23 @@ router.get("/buckets", async (req, res, next) =>
 	try 
 	{
 	    const buckets =
-		  await new BucketApi()
+		  await new BucketsApi()
 		  .getBuckets({ limit: 64 },
 			      req.oauth_client,
 			      req.oauth_token);
 	    res.json(buckets
 		     .body
 		     .items
-		     .map((bucket) =>
-			  {
-			      return
-			      {
+		     .map((bucket) => {
+			  return {
 				  id: bucket.bucketKey,
 				  text: bucket.bucketKey.replace(
 				      config.credentials.client_id.toLowerCase() + "-", ""),
 				  type: "bucket",
 				  children: true
-			      };
-			  }));
-	}
+			  };
+			}));
+	}	
 	catch(err)
 	{
 	    next(err);
@@ -57,21 +55,20 @@ router.get("/buckets", async (req, res, next) =>
 	    const objects = await new ObjectsApi()
 		  .getObjects(
 		      bucket_name, {},
-		      req.oauth_client,
+			  req.oauth_client,
+			  req.oauth_token);
 		      res.json(
 			  objects
 			      .body
 			      .items
-			      .map((object) =>
-				   {
-				       return
-				       {
+			      .map((object) => {
+				   return {
 					   id: Buffer.from(object.objectId).toString("base64"),
 					   text: object.objectKey,
 					   type: "object",
 					   children: false
-				       };
-				   })));
+				    };
+		}));
 	}
 	catch(err)
 	{
@@ -101,19 +98,15 @@ router.post(
     "/objects",
     multer({ dest: "uploads/" })
 	.single("fileToUpload"),
-    async(
-	req,
-	res,
-	fs.readFile(
-	    req.file.path,
-	    async (err, data) =>
-		{
-		    if (err)
+    async(req, res, next) => {
+	fs.readFile(req.file.path, async (err, data) => {
+		if (err) {
 			next(err);
-		    try
-		    {
+		}
+		try {
 			await new ObjectsApi()
-			    .uploadObject(req.body.bucketKey,
+			    .uploadObject(
+					  req.body.bucketKey,
 					  req.file.originalname,
 					  data.length,
 					  data,
@@ -121,14 +114,12 @@ router.post(
 					  req.oauth_client,
 					  req.oauth_token);
 			res.status(200).end();
-		    }
-		    catch (err)
-		    {
+		} catch (err) {
 			next(err);
-		    }
+		}
 		});
-    );
-);
+});
+
 
 module.exports = router;
 						     
