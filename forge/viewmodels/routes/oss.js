@@ -5,7 +5,7 @@
 const fs = require("fs");
 const express = require("express");
 const multer = require("multer");
-const { BucketApi, ObjectsApi, PostBucketsPayload } = require("forge-apis");
+const { BucketsApi, ObjectsApi, PostBucketsPayload } = require("forge-apis");
 
 const { getClient, getInternalToken } = require("./common/oauth");
 const config = require("../config");
