@@ -6,6 +6,7 @@ $(document).ready(() => {
 });
 
 $("#createNewBucket").click(() => {
+    console.log("clicked createNewBucket");
     createNewBucket();
 });
 
@@ -39,11 +40,13 @@ $("#hiddenUploadField").change(() => {
 });
 
 function createNewBucket() {
+    alert("foo");
     let bucketKey = $("#newBucketKey").val();
     let policyKey = $("#newBucketPolicyKey").val();
+    alert(`${bucketKey} and ${policyKey}`);
     jQuery.post({
         url: "/api/forge/oss/buckets",
-        contentType: "applicatoin/json",
+        contentType: "application/json",
         data: JSON.stringify({ "bucketKey": bucketKey, "policyKey": policyKey }),
         success: (res) => {
             $("#appBuckets").jstree(true).refresh();
@@ -164,3 +167,4 @@ function translateObject(node) {
         }
     })
 }
+
