@@ -7,6 +7,10 @@
         <title>My test page</title>
     </head>
     <body>
+        <script>
+            let modAt = document.getElementById("dateTime");
+            modAt.innerHTML = new Date();
+        </script>
         <h1>Mozilla is sick</h1>
         <img src=".\images\firefox-icon.png" alt="My test image" width="256" heigh="256">
         <p>At Mozilla, we are a global community of</p>
@@ -25,5 +29,8 @@
             more about the values and principles that guide the 
             pursuit of our mission.
         </p>
+        <p>Modified at <span id="dateTime"></span></p>
+
+        <script src="scripts/main.js"></script>
     </body>
 </html>
