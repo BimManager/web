@@ -1,0 +1,14 @@
+{
+  "name": "meadowlark",
+  "version": "1.0.0",
+  "description": "A project to get me up to speed with web development using nodejs and express",
+  "main": "start.js",
+  "scripts": {
+    "test": "test"
+  },
+  "author": "kkozlov",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
