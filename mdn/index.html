@@ -7,10 +7,6 @@
         <title>My test page</title>
     </head>
     <body>
-        <script>
-            let modAt = document.getElementById("dateTime");
-            modAt.innerHTML = new Date();
-        </script>
         <h1>Mozilla is sick</h1>
         <img src=".\images\firefox-icon.png" alt="My test image" width="256" heigh="256">
         <p>At Mozilla, we are a global community of</p>
@@ -30,7 +26,21 @@
             pursuit of our mission.
         </p>
         <p>Modified at <span id="dateTime"></span></p>
+        <button id="clickMeBtn">Click Me!</button>
+        <p id="output">Bar</p>
+        <button id="chgUsrBtn">Change user</button>
+        <p>Welcome <span id="usrName"></span></p>
 
+        <input id="itemField"/>
+        <ul id="items">
+        </ul>
+        <ol>
+            <li>Foo</li>
+            <li>Bar</li>
+        </ol>
+        
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
         <script src="scripts/main.js"></script>
+        <script></script>
     </body>
 </html>

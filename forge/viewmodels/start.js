@@ -7,11 +7,11 @@ const express = require("express");
 
 const PORT = process.env.PORT || 3000;
 const config = require("./config");
-if (config.credentials.client_id == null
-    || config.credentials.client_secret == null)
+if (config.credentials.client_id == null ||
+    config.credentials.client_secret == null)
     {
-	console.error("client_id or client_secret is missing.");
-	return ;
+		console.error("client_id or client_secret is missing.");
+		return ;
     }
 
 let app = express();
