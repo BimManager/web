@@ -21,3 +21,6 @@ http.createServer((req, res) => {
     res.writeHead(200, {"Content-Type": "text/plain"});
     serveStaticFile(res, "/public/auth.html", "text/html");
 }).listen(port);
+
+let authMeBtn = document.getElementById("authorizeMe");
+authMeBtn.onlick = () => { console.log("Authorize Me!"); };
