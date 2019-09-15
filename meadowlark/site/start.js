@@ -11,6 +11,15 @@ app.set("view engine", "handlebars");
 
 app.set("port", process.env.PORT || 3000);
 
+/* middleware to detect test=1 */
+app.use((req, res, next) => {
+    res.locals.showTests = app.get("env") !== "production" &&
+	req.query.test === "1";
+    next();
+});
+
+app.use(express.static(__dirname + "/public"));
+
 /* home page */
 app.get("/", (req, res, next) => {
 /*    res.type("text/plain");
@@ -25,7 +34,10 @@ app.get("/about", (req, res, next) => {
     res.status(200);
     res.send("about page");*/
 //    res.render("about");
-    res.render("about", { fortune: fortune.getFortune() });
+    res.render("about", {
+	fortune: fortune.getFortune(),
+	pageTestScript: "/qa/tests-about.js"
+    });
 });
 
 /* custom 404 page */
