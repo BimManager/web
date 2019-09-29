@@ -1,0 +1,56 @@
+<html>
+  <head>
+<title>Button Click</title>
+</head>
+<body>
+  <h1>Button Click</h1>
+  <div>
+    <label id="countLb">Count: 0</label>
+    </br>
+    <button type="button" id="countBtn">Click Me!</button>
+    <div id="container"></div>
+<address>
+<a href="mailto:archangel@DESKTOP-VNH23RN.localdomain">DESKTOP-VNH23RN</a>
+</address>
+<!-- <script>
+  let btn = document.getElementById("countBtn");
+  btn.onclick = () => {
+      let countLb = document.getElementById("countLb");
+      let count = 0;
+      if (localStorage.clickCount)
+	  count = localStorage.clickCount;
+      countLb.innerHTML = "Count: " + count;
+      count++;
+      localStorage.clickCount = count;
+      alert("You pressed the button.");
+  };
+  </script> !-->
+<script>
+  class Counter extends React.Component {
+      constuctor(props) {
+//	  super(props);
+	  this.state = { count: 0 };
+      }
+      incrementCount() {
+	  this.setState( { count: this.state.count + 1 } );
+      }
+      render() {
+	  return (
+		  <div>
+		  Count: { this.state.count }
+		  <button type="button"
+	      onClick = { this.incrementCount.bind(this) } >
+		  Increment
+	      </button>
+		  </div>
+	  );
+      }
+  };
+  ReactDOM.render(
+	  <div>
+	  <Counter />
+	  </div>,
+      document.getElementById("container"));
+  </script>
+</body>
+</html>

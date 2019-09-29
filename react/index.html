@@ -5,13 +5,54 @@
     <script crossorigin src="https://unpkg.com/react@16/umd/react.development.js"></script>
     <script crossorigin src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
 </head>
-<body>
+  <body>
+    <p> Hiya!</p>
+    <div>Some rubbish</p>
   <div id="container"></div>
-  <script type="text/jsx">
-    ReactDOM.render(
-	    <h1>Hello, React World!</h1>,
-	document.getElementById("container")
-    );
-  </script>
+  <script src="https://unpkg.com/react@16/umd/react.development.js"
+	  crossorigin></script>
+  <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js" crossorigin></script>
+    <script type="text/jsx">
+      ReactDOM.render(
+	      <h1>Hello, React World!</h1>,
+	  document.getElementById("container")
+      );
+      let helloComponent = React.createClass(
+	  {
+	    render: () => {
+		return (<h1>Hello, React!</h1>);
+	    }
+	});
+      ReactDOM.render(
+	    <HelloComponent />,
+	document.getElementById("container"));
+      class HelloComponent extends React.Component {
+	  rendre() {
+	      return (
+		      <h1>Hello, {this.props.name}!</h1>
+	      );
+	  }
+      };
+      ReactDOM.render(
+	      <HelloComponent name="Maria" />,
+	  document.getElementById("containter")
+      );
+    </script>
+    <script>
+      class TimesView extends React.Component {
+	  constructor(props) {
+	      super(prosp);
+	      let timesViewed = 0;
+	      if (localStorage.timesViewed)
+		  timesViewed = localStorage.timesViewed;
+	      timesViewed++;
+	      this.state = { numViews: timesViewed };
+	      localStorage.timesViewed = timesViewed;
+	  }
+	  render() {
+	      return (</b>{this.state.numViews}</b>);
+	  }
+      }
+    </script>
 </body>
 </html>
