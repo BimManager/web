@@ -1,6 +1,8 @@
 const Browser = require("zombie");
 const assert = require("chai").assert;
 
+const port = process.env.PORT || 3000;
+
 let browser;
 suite("Cross-Page Tests",
       () => {
@@ -9,12 +11,14 @@ suite("Cross-Page Tests",
 	  });
 	  test("requesting a group rate quote form the hood river tour page"
 	       + "should populate the referrer field", (done) => {
-		   let referrer = "http://localhost:3000/tours/hood-river";
+		   let referrer = `http://localhost:${port}/tours/hood-river`;
+		   console.log(referrer);
 		   browser.visit(referrer, () => {
 		       browser
 			   .clickLink(
 			       ".requestGroupRate",
 			       () => {
+				   console.log(browser.field("referrer").value);
 				   assert(browser.field("referrer").value === referrer);
 				   done();
 			       });
