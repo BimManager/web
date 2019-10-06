@@ -1,6 +1,9 @@
 <html>
   <head>
-<title>Button Click</title>
+    <title>Button Click</title>
+    <script crossorigin src="https://unpkg.com/react@16/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
 </head>
 <body>
   <h1>Button Click</h1>
@@ -25,10 +28,10 @@
       alert("You pressed the button.");
   };
   </script> !-->
-<script>
+<script type="text/babel">
   class Counter extends React.Component {
-      constuctor(props) {
-//	  super(props);
+      constructor(props) {
+	  super(props);
 	  this.state = { count: 0 };
       }
       incrementCount() {

@@ -1,15 +1,60 @@
+<!DOCTYPE html>
 <html>
   <head>
-<title>React</title>
+    <title>Hello, React</title>
+    <script crossorigin src="https://unpkg.com/react@16/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
 </head>
-<body>
-<h1>React</h1>
-<div id="like_button_container"></div>
-<address>
-<a href="mailto:archangel@SD-346.SD.LOCAL">SD-346</a>
-</address>
-<script src="https://unpkg.com/react@16/umd/react.development.js" crossorigin></script>
-<script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js" crossorigin></script>
-<script src="like_button.js"></script>
+  <body>
+    <p> Hiya!</p>
+    <div>Some rubbish</p>
+<div id="container"></div>
+</br>
+<div id="container2"></div>
+</br>
+<div id="container3"></div>
+    <script type="text/babel">
+      ReactDOM.render(
+	      <h1>Hello, React World!</h1>,
+	  document.getElementById("container")
+      );
+      let helloComponent = React.createComponent(
+	  {
+	    render: () => {
+		return (<h1>Hello, React!</h1>);
+	    }
+	});
+      ReactDOM.render(
+	    <HelloComponent />,
+	document.getElementById("container2"));
+      class HelloComponent extends React.Component {
+	  rendre() {
+	      return (
+		      <h1>Hello, {this.props.name}!</h1>
+	      );
+	  }
+      };
+      ReactDOM.render(
+	      <HelloComponent name="Maria" />,
+	  document.getElementById("containter3")
+      );
+    </script>
+    <script type="text/babel">
+      class TimesView extends React.Component {
+	  constructor(props) {
+	      super(props);
+	      let timesViewed = 0;
+	      if (localStorage.timesViewed)
+		  timesViewed = localStorage.timesViewed;
+	      timesViewed++;
+	      this.state = { numViews: timesViewed };
+	      localStorage.timesViewed = timesViewed;
+	  }
+	  render() {
+	      return (<b>{this.state.numViews}</b>);
+	  }
+      }
+    </script>
 </body>
 </html>
