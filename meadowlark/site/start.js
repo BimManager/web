@@ -20,6 +20,12 @@ app.use((req, res, next) => {
 
 app.use(express.static(__dirname + "/public"));
 
+app.get("/foo", (req, res, next) => {
+    res.status(200);
+    res.type("text/plain");
+    res.send("foo");
+});
+
 /* home page */
 app.get("/", (req, res, next) => {
 /*    res.type("text/plain");
@@ -40,6 +46,11 @@ app.get("/about", (req, res, next) => {
     });
 });
 
+// react page
+app.get("/react", (req, res, next) => {
+    res.status(200);
+    res.sendFile(__dirname + "/views/chooser.html");
+});
 
 app.get("/tours/hood-river", (req, res) => {
     res.render("tours/hood-river");
