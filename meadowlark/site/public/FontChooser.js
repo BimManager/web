@@ -5,7 +5,7 @@ class FontChooser extends React.Component {
 	this.checkboxRef = React.createRef();
 	this.textRef = React.createRef();
 	console.log(this.props.bold);
-	this.state = { fontWeight: (this.props.bold == true ? "bold" : "normal"), size: parseInt(this.props.size, 10) };
+	this.state = { fontWeight: (this.props.bold == "true" ? "bold" : "normal"), size: parseInt(this.props.size, 10) };
     }
     toggleFormElements() {
 	const formRef = this.formRef.current;
