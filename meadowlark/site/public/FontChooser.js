@@ -3,12 +3,41 @@ class FontChooser extends React.Component {
 	super(props);
 	this.formRef = React.createRef();
 	this.checkboxRef = React.createRef();
-	localStorage.setItem("initialFontSize", this.props.size);
-	console.log(this.props.bold);
 	this.state = { fontColor: "black",
-	    fontWeight: this.props.bold == "true" ? "bold" : "normal",
-		       fontSize: parseInt(this.props.size, 10) };
+		       fontWeight: this.props.bold == "true" ? "bold" : "normal",
+		     };
+	this.errorHandling();
+	localStorage.setItem("initialFontSize", this.fontSize);
     }
+    errorHandling() {
+	let min = parseInt(this.props.min);
+	let max = parseInt(this.props.max);
+	let size = parseInt(this.props.size);
+	
+	min = min <= 0 ? 1 : min;
+	max = max <= 0 ? 1 : max;
+	if (min > max) {
+	    let tmp = min;
+	    min = max;
+	    max = min;
+	}
+	if (size < min) {
+	    size = min;
+	}
+	if (size > max) {
+	    size = max;
+	}
+	this.state.fontSizeMin = min;
+	this.state.fontSizeMax = max;
+	this.state.fontSize = size;
+    }
+
+    componentDidMount() {
+	console.log(`min = ${this.state.fontSizeMin}`);
+	console.log(`max = ${this.state.fontSizeMax}`);
+	console.log(`size = ${this.state.fontSize}`);
+    }
+    
     toggleFormElements() {
 	const formRef = this.formRef.current;
 	const checkboxRef = this.checkboxRef.current;
@@ -28,11 +57,11 @@ class FontChooser extends React.Component {
 	    this.setState({fontWeight: "normal"});
 	}
     }
-    
+
     incrementFontSize() {
-	if (this.state.fontSize == this.props.max) {
+	if (this.state.fontSize == this.state.fontSizeMax) {
 	    return ;
-	} else if (this.state.fontSize == this.props.max - 1) {
+	} else if (this.state.fontSize == this.state.fontSizeMax - 1) {
 	    this.setState({fontColor: "red"});
 	} else if (this.state.fontColor == "red") {
 	    this.setState({fontColor: "black"});
@@ -44,9 +73,9 @@ class FontChooser extends React.Component {
     }
     
     decrementFontSize() {
-	if (this.state.fontSize == this.props.min) {
+	if (this.state.fontSize == this.state.fontSizeMin) {
 	    return ;
-	} else if (this.state.fontSize - 1 == this.props.min) {
+	} else if (this.state.fontSize - 1 == this.state.fontSizeMin) {
 	    this.setState({fontColor: "red"});
 	}
 	else if (this.state.fontColor == "red") {
