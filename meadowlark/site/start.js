@@ -23,10 +23,15 @@ app.use(express.static(__dirname + "/public"));
 app.get("/foo", (req, res, next) => {
     res.status(200);
     res.type("text/plain");
-    res.send("foo");
+    //    res.send("foo");
+    res.render("forms/bookform");
 });
 
-/* home page */
+app.use("/createbook", (req, res, next) => {
+    console.log("req.body");
+    next();
+});
+
 app.get("/", (req, res, next) => {
 /*    res.type("text/plain");
     res.status(200);
@@ -34,7 +39,6 @@ app.get("/", (req, res, next) => {
     res.render("home");
 });
 
-/* about page */
 app.get("/about", (req, res, next) => {
 /*    res.type("text/plain");
     res.status(200);
@@ -46,7 +50,6 @@ app.get("/about", (req, res, next) => {
     });
 });
 
-// react page
 app.get("/react", (req, res, next) => {
     res.status(200);
     res.sendFile(__dirname + "/views/chooser.html");
