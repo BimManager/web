@@ -7,6 +7,7 @@ const bodyParser = require("body-parser");
 
 const app = express();
 app.use(bodyParser.urlencoded({ extended: true }));
+app.set("view engine", "ejs"); 
 
 const queryNameLocation = (req) => {
     const query = req.query;
@@ -77,13 +78,41 @@ app.get("/about", (req, res, next) => {
 
 app.use(express.static("public"));
 
-app.post("/handleForm", (req, res) => {
+const handleFormMethod1 = (req, res) => {
     const name = req.body.username;
     const animals = req.body.animal;
     res.type("text/html");
     res.status(200);
     res.write(`${name} likes ${animals}.`);
     res.end();
+};
+
+const handleFormMethod2 = (req, res) => {
+    const name = req.body.username;
+    const animal = req.body.animal;
+    const animals = [].concat(animal);
+    console.log(animals);
+    res.write(`<p>Hello, ${name}, nice to meet you.</p>`);
+    res.write("<p>Here are the animals that you like:</p>");
+    res.write("<ul>");
+    animals.forEach((animal) => {
+	res.write(`<li>${animal}</li>`);
+    });
+    res.write("<p><a href=form.html>Back to Form</a></p>");
+    res.end();
+};
+
+const handleFormUsingEJS = (req, res) => {
+    const user = req.body.username;
+    const animals = [].concat(req.body.animal);
+    console.log(animals);
+    res.render("showAnimals", { username: user, animals: animals });
+};
+
+app.post("/handleForm", (req, res) => {
+    //    handleFormMethod1(req, res);
+    //    handleFormMethod2(req, res);
+    handleFormUsingEJS(req, res);
 });
 
 app.get("/name/:userName/location/:userLocation",

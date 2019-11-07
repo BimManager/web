@@ -1,0 +1,14 @@
+<!-- This is views/showAnimals.ejs -->
+
+<!DOCTYPE html>
+<html>
+  <body>
+    <h1>Hello, <%= username %>, delighted to make your acquaintance!</h1>
+    <p><%= username %> likes the following animals:</p>
+    <ul><% animals.forEach((a) => { %>
+      <li><%= a %></li>
+      <% }); %>
+      </ui>
+    <p><a href="/form.html">Back to Form</a></p>
+  </body>
+</html>
