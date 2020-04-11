@@ -8,12 +8,10 @@ const mongoose = require('mongoose');
 const config = require('./config');
 const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
+const catalogRouter = require('./routes/catalog');
 
 const app = express();
-const mongoDB = `mongodb+srv://${config.credentials.dbUser}:\
-${config.credentials.dbPassword}@cluster0-2aice.mongodb.net/\
-test?retryWrites=true&w=majority`;
-mongoose.connect(mongoDB, { useNewUrlParser: true });
+mongoose.connect(config.db.mongoDB, { useNewUrlParser: true });
 const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'MongoDB connection error.'));
 
@@ -26,6 +24,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 /* route handlers */
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
+app.use('/catalog', catalogRouter);
 
 app.use((req, res, next) => {
 	next(createError(404));
@@ -37,7 +36,7 @@ app.use((err, req, res, next) => {
 		err : {};
 
 	res.status(err.status || 500);
-	res.send('error');
+	res.send(err.stack);
 //	res.render('error');
 });
 

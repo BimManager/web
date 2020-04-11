@@ -1,0 +1,15 @@
+extends layout
+
+block content
+  h1= title
+  each instance in instances
+    li
+      a(href=instance.url) #{instance.book.title} : #{instance.imprint} - 
+      if 'Available' == instance.status
+        span.text-success #{instance.status} 
+      else if 'Maintenance' == instance.status
+        span.text-danger #{instance.status} 
+      else
+        span.text-warning #{instance.status} 
+      if 'Available' != instance.status
+        span (Due: #{instance.due_back_formatted})

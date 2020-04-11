@@ -1,7 +1,10 @@
 module.exports = {
 	port: process.env.PORT || 3000,
 	credentials: {
-		dbUser: process.env.DB_USER || 'undefined',
-		dbPassword: process.env.DB_PASSWD || 'undefined'
+	},
+	db: {
+		mongoDB: `mongodb+srv://${process.env.DB_USER}:\
+${process.env.DB_PASSWD}@cluster0-2aice.mongodb.net/\
+local_library?retryWrites=true&w=majority`
 	}
 };
