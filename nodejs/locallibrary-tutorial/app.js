@@ -4,6 +4,7 @@ const logger = require('morgan');
 const cookieParser = require('cookie-parser');
 const createError = require('http-errors');
 const mongoose = require('mongoose');
+const bodyParser = require('body-parser');
 
 const config = require('./config');
 const indexRouter = require('./routes/index');
@@ -19,6 +20,7 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 
 /* middlewares */
+app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
 
 /* route handlers */

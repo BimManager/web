@@ -1,0 +1,10 @@
+extends layout
+
+block content
+  h1= title
+  p #[strong Title: ]
+    a(href=instance.book.url) #{instance.book.title}
+  p #[strong Imprint: ] #{instance.imprint}
+  p #[strong Status: ] #{instance.status}
+  if 'Available' != instance.status
+    p #[strong Due back: ] #{instance.due_back_formatted}

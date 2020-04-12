@@ -10,8 +10,14 @@ module.exports.bookinstance_list = (req, res, next) => {
 		});
 };
 
-module.exports.bookinstance_detail = (req, res) => {
-	res.send('NOT IMPLEMENTED: Bookinstance detail');
+module.exports.bookinstance_detail = (req, res, next) => {
+	BookInstance.findById(req.params.id).populate('book').exec((err, an_instance) => {
+		if (err) { return next(err); }
+		res.render('bookinstance_detail', {
+			title: 'ID: ' + an_instance._id,
+			instance: an_instance
+		});
+	});
 };
 
 module.exports.bookinstance_create_get = (req, res) => {
