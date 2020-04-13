@@ -1,0 +1,27 @@
+extends layout
+
+block content
+  h1= title
+  form(method="POST", action="")
+    div.form-group
+      label(for="book") Book:
+      select#book.form-control(type="select", name="book", require="true")
+        for book in books
+          option(value=book._id) #{book.title}
+      label(for="imprint") Imprint:
+      input#imprint.form-control(name="imprint", type="text", require="true", placeholder="Tor Books")
+      label(for="due_back") Date when book available:
+      input#due_back.form-control(name="due_back", type="text", placeholder="yyyy-mm-dd")
+      label(for="status") Status:
+      select#stauts.form-control(name="status", type="select", require="true")
+        option(value="Available") Available
+        option(value="Maintenance") Maintenance
+        option(value="Loaned") Loaned
+        option(value="Reserved") Reserved
+    button.btn.btn-primary(type="sumbit") Submit
+  if errors
+    hr
+    h3 Errors:
+    ul
+      for error in errors
+        li!= error.msg

@@ -1,0 +1,37 @@
+extends layout
+
+block content
+  h1= title
+  form(method="POST", action="")
+    div.form-group
+      label(for="title") Title:
+      input#title.form-control(name="title", type="text", require="true", placeholder="Greate Expectations", value=(undefined===book ? "" : book.title))
+      label(for="author") Author:
+      select#author.form-control(name="author", type="select", list=authors, require="true", placeholder="Select author")
+        for author in authors
+          if book
+            option(value=author._id, selected=(author._id.toString()==book.author ? 'selected' : false))
+          else
+            option(value=author.id) #{author.name}
+      label(for="summary") Summary:
+      input#summary.form-control(name="summary", type="text", require="true", placeholder="Once upon a time,", value=(undefined===book ? "" : book.summary))
+      label(for="isbn") ISBN:
+      input#isbn.form-control(name="isbn", type="text", require="true", placeholder="ISBN42", value=(undefined===book ? "" : book.isbn))
+      label Genre:
+      div
+        each genre in genres
+          span(stye="display: inline; padding-right: 10px;")
+            input.checkbox-input(id=genre._id, name="genre", type="checkbox", value=genre._id, checked=genre.checked, style="margin-left: 10px; margin-right: 10px")
+            label(for=genre._id) #{genre.name}
+            | 
+      button.btn.btn-primary(type="submit") Submit
+
+    if errors
+      hr
+      h3 Errors:
+      ul
+        for error in errors
+          li!= error.msg
+
+
+    

@@ -1,4 +1,5 @@
 const async = require('async');
+const validator = require('express-validator');
 
 const Book = require('../models/book');
 const Author = require('../models/author');
@@ -56,13 +57,50 @@ module.exports.book_detail = (req, res, next) => {
 	});
 };
 
-module.exports.book_create_get = (req, res) => {
-	res.send('NOT IMPLEMENTED: Book create GET');
+module.exports.book_create_get = (req, res, next) => {
+	async.parallel({
+		genre_list: (cb) => { Genre.find({}).exec(cb) },
+		author_list: (cb) => { Author.find({}).exec(cb) },
+	}, (err, results) => {
+		if (err) { return next(err); }
+		res.render('book_form', {
+			title: 'Create Book', authors: results.author_list.sort(
+				(a1, a2) => a1.family_name.toUpperCase().localeCompare(
+					a2.family_name.toUpperCase())),
+			genres: results.genre_list });
+	});
 };
 
-module.exports.book_create_post = (req, res) => {
-	res.send('NOT IMPLEMENTED: Book create POST');
-};
+module.exports.book_create_post = [
+	validator.body('title').trim().isLength({ min: 1 }).withMessage('Title is required'),
+	validator.body('summary').trim().isLength({ min: 1 }).withMessage('Summary is required'),
+	validator.body('isbn').trim().isLength({ min: 1 }).withMessage('ISBN is required'),
+	validator.body('*').escape(),
+	(req, res, next) => {
+		const book = new Book({
+			title: req.body.title, author: req.body.author,
+			summary: req.body.summary, isbn: req.body.isbn,
+			genre: req.body.genre });
+		const errors = validator.validationResult(req);
+		if (!errors.isEmpty()) {
+			async.parallel({
+				authors: (cb) => Author.find({}).exec(cb),
+				genres: (cb) => Genre.find({}).exec(cb)
+			}, (err, results) => {
+				if (err) { return next(err); }
+				res.render('book_form', {
+					title: 'Create Book', authors: results.authors,
+					genres: results.genres, errors: errors.array() });
+			});
+			return ;
+		}
+		book.save((err) => {
+			if (err) { return next(err); }
+			res.redirect(book.url);
+		})
+	}
+];
+
 
 module.exports.book_update_get = (req, res) => {
 	res.send('NOT IMPLEMENTED: Book update GET');
