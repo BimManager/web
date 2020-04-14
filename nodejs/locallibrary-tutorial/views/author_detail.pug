@@ -4,6 +4,11 @@ block content
   h1= title
   p #{author.lifespan}
   h3 Books
+  if !books.length
+    p This author has no books.
   each book in books
     a(href=book.url) #{book.title}
     p #{book.summary}
+  hr
+  a(href=author.url + "/delete") Delete author
+  

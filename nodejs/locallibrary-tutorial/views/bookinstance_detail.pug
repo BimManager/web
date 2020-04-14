@@ -8,3 +8,5 @@ block content
   p #[strong Status: ] #{instance.status}
   if 'Available' != instance.status
     p #[strong Due back: ] #{instance.due_back_formatted}
+  hr
+  a(href=instance.url + "/delete") Delete Book Instance

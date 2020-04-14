@@ -76,10 +76,21 @@ module.exports.author_update_post = (req, res) => {
 	res.send('NOT IMPLEMENTED: Author update POST');
 };
 
-module.exports.author_delete_get = (req, res) => {
-	res.send('NOT IMPLEMENTED: Author delete GET');
+module.exports.author_delete_get = (req, res, next) => {
+	async.parallel({
+		author: (cb) => Author.findById(req.params.id).exec(cb),
+		book_list: (cb) => Book.find({ 'author': req.params.id }).exec(cb)
+	}, (err, results) => {
+		if (err) { return next(err); }
+		res.render('author_delete', {
+			author: results.author,
+			books: results.book_list });
+	});
 };
 
-module.exports.author_delete_post = (req, res) => {
-	res.send('NOT IMPLEMENTED: Author delete POST');
+module.exports.author_delete_post = (req, res, next) => {
+	Author.findByIdAndRemove(req.body.id, (err) => {
+		if (err) { return next(err); }
+		res.redirect('/catalog/authors');
+	});
 };

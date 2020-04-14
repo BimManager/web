@@ -1,0 +1,18 @@
+extends layout
+
+block content
+  h1 #{book.title}
+  if instances.length
+    p #[strong Delete these instances first if you with to ditch the book. ]
+    ul
+      for instance in instances
+        li
+          a(href=instance.url) #{book.title} #{instance.imprint}
+          | 
+          | #{instance.status}
+  else
+    p #[strong Are you sure you would like to jettison this book ?]
+    form(method="POST", action="")
+      div.form-group
+        input#id.form-control(type="hidden", name="id", value=book._id, require="true")
+      button.btn.btn-primary(type="submit") Delete

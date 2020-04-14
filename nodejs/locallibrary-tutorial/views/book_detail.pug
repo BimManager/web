@@ -26,3 +26,8 @@ block content
       p (Due Back : #{instance.due_back_formatted})
     p Id: 
      a(href=instance.url) #{instance._id}
+  hr
+  p
+    a(href=book.url + "/update") Update book
+  p
+    a(href=book.url + "/delete") Delete book

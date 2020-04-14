@@ -69,10 +69,17 @@ module.exports.bookinstance_update_post = (req, res) => {
 	res.send('NOT IMPLEMENTED: Bookinstance update POST');
 };
 
-module.exports.bookinstance_delete_get = (req, res) => {
-	res.send('NOT IMPLEMENTED: Bookinstance delete GET');
+module.exports.bookinstance_delete_get = (req, res, next) => {
+	BookInstance.findById(req.params.id)
+		.populate('book').exec((err, instance) => {
+			if (err) { return next(err); }
+			res.render('bookinstance_delete', { instance: instance });
+		});
 };
 
-module.exports.bookinstance_delete_post = (req, res) => {
-	res.send('NOT IMPLEMENTED: Bookinstance delete POST');
+module.exports.bookinstance_delete_post = (req, res, next) => {
+	BookInstance.findByIdAndRemove(req.body.id).exec((err) => {
+		if (err) { return next(err); }
+		res.redirect('/catalog/bookinstances');
+	});
 };

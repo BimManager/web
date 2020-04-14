@@ -102,16 +102,42 @@ module.exports.book_create_post = [
 ];
 
 
-module.exports.book_update_get = (req, res) => {
-	res.send('NOT IMPLEMENTED: Book update GET');
+module.exports.book_update_get = (req, res, next) => {
+	async.parallel({
+		book: (cb) => Book.findById(req.params.id).populate('author').exec(cb),
+		author_list: (cb) => Author.find({}).exec(cb),
+		genre_list: (cb) => Genre.find({}).exec(cb)
+	}, (err, results) => {
+		if (err) { return next(err); }
+		const checked = results.book.genre;
+		i = -1;
+		while (++i < results.genre_list.length) {
+			if (checked.indexOf(results.genre_list[i]._id) != -1)
+				results.genre_list[i].checked = true;
+			else
+				results.genre_list[i].checked = false;
+		}				   
+		res.render('book_update', {
+			title: 'Update Book', book: results.book, authors: results.author_list,
+			genres: results.genre_list });
+	});
 };
 
 module.exports.book_update_post = (req, res) => {
 	res.send('NOT IMPLEMENTED: Book update POST');
 };
 
-module.exports.book_delete_get = (req, res) => {
-	res.send('NOT IMPLEMENTED: Book delete GET');
+module.exports.book_delete_get = (req, res, next) => {
+	async.parallel({
+		book: (cb) => Book.findById(req.params.id).exec(cb),
+		instances: (cb) => BookInstance
+			.find({ 'book' : req.params.id }).exec(cb)
+	}, (err, results) => {
+		if (err) { return next(err); }
+		res.render('book_delete', {
+			book: results.book,
+			instances: results.instances });
+	});
 };
 
 module.exports.book_delete_post = (req, res) => {
