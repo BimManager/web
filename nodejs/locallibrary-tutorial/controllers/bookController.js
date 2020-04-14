@@ -101,7 +101,6 @@ module.exports.book_create_post = [
 	}
 ];
 
-
 module.exports.book_update_get = (req, res, next) => {
 	async.parallel({
 		book: (cb) => Book.findById(req.params.id).populate('author').exec(cb),
@@ -123,9 +122,50 @@ module.exports.book_update_get = (req, res, next) => {
 	});
 };
 
-module.exports.book_update_post = (req, res) => {
-	res.send('NOT IMPLEMENTED: Book update POST');
-};
+module.exports.book_update_post = [
+	(req, res, next) => {
+		if (!(req.body.genre instanceof Array)) {
+			if (undefined === typeof req.body.genre) { req.body.genre = []; }
+			else { req.body.genre = new Array(req.body.genre); }
+		}
+		console.log(req.body.genre);
+		next();
+	},
+	validator.check('title').trim().isLength({ min: 1 }).withMessage('Title is required'),
+	validator.check('summary').trim().isLength({ min: 1 }).withMessage('Summary is required'),
+	validator.check('isbn').trim().isLength({ min: 1 }).withMessage('ISBN is required'),
+	validator.sanitizeBody('title').escape(), validator.sanitizeBody('summary').escape(),
+	validator.sanitizeBody('isbn').escape(),
+	(req, res, next) => {
+		const errors = validator.validationResult(req);
+		const book = new Book({
+			title: req.body.title,
+			author: req.body.author,
+			summary: req.body.summary,
+			isbn: req.body.isbn,
+			genre: req.body.genre,
+			_id: req.params.id
+		});
+		console.log(book);
+		if (!errors.isEmpty()) {
+			console.log('errors');
+			async.parallel({
+				authors: (cb) => Author.find(cb),
+				genres: (cb) => Genre.find(cb),
+			}, (err, results) => {
+				res.render('book_update', {
+					title: 'Update Book', book: book, authors: results.authors,
+					genres: results.genres, errors: errors.array() });
+			});
+			return ;
+		}
+		Book.findByIdAndUpdate(req.params.id, book, {}, (err, thebook) => {
+			if (err) { return next(err); }
+			res.redirect(book.url);
+		});
+	}
+];
+
 
 module.exports.book_delete_get = (req, res, next) => {
 	async.parallel({

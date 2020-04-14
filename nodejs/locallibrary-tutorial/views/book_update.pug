@@ -18,7 +18,7 @@ block content
       for genre in genres
         span(style="display: inline; padding-right: 10px")
           input.checkbox-input(id=genre._id, name="genre", type="checkbox", value=genre._id, style="margin-left: 10px; margin-right: 10px", checked=genre.checked)
-          label(for="genre") #{genre.name}
+          label(for=genre._id) #{genre.name}
           |
     button.btn.btn-primary(type="sumbit") Sumbit
 
