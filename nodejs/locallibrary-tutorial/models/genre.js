@@ -5,7 +5,7 @@ const Schema = mongoose.Schema;
 const GenreSchema = new Schema({
 	name: { type: String, required: true, min: 3, max: 100,
 			enum: ['Horror', 'Fiction', 'Non-fiction', 'Science Fiction',
-				   'Romance', 'Mystery', 'Fantasy', 'French Poetry'] }
+				   'Romance', 'Mystery', 'Fantasy', 'French Poetry', 'Foo'] }
 });
 
 GenreSchema.virtual('url').get(function() {

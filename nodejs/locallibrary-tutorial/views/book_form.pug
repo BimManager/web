@@ -10,9 +10,9 @@ block content
       select#author.form-control(name="author", type="select", list=authors, require="true", placeholder="Select author")
         for author in authors
           if book
-            option(value=author._id, selected=(author._id.toString()==book.author ? 'selected' : false))
+            option(value=author._id, selected=(author._id==book.author.id ? 'selected' : 'false')) #{author.name}
           else
-            option(value=author.id) #{author.name}
+            option(value=author._id) #{author.name}
       label(for="summary") Summary:
       input#summary.form-control(name="summary", type="text", require="true", placeholder="Once upon a time,", value=(undefined===book ? "" : book.summary))
       label(for="isbn") ISBN:

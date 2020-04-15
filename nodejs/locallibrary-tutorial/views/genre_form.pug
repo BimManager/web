@@ -5,10 +5,17 @@ block content
   form(method="POST", action="")
     div.form-group
       label(for="name") Genre:
-      input#name.form-control(type="text", placeholder="Fantasy, Poetry, etc", name="name", value=(undefined==genre ? "" : genre.name))
+      if names
+        select#name.form-control(type="select", name="name")
+          for name in names
+            option(value=name) #{name}
+      else
+        input#name.form-control(type="text", placeholder=(undefined==genre ? "Fantasy, Poetry, etc" : genre.name), name="name", value=(undefined==genre ? "" : genre.name))
     button.btn.btn-primary(type="submit") Submit
 
-    if errors
-      ul
-        for error in errors
-          li!= error.msg
+  if errors
+    hr
+    h4 Errors:
+    ul
+      for error in errors
+        li!= error.msg

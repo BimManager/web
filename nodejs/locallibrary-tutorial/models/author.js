@@ -19,9 +19,17 @@ AuthorSchema.virtual('name').get(function() {
 });
 
 AuthorSchema.virtual('lifespan').get(function() {
-	return moment(this.birth_date).format('MMMM Do, YYYY') + ' - ' +
-		this.death_date ? moment(this.death_date).format('MMMM Do, YYYY') : '';
-	//return (this.date_of_death.getYear() - this.date_of_birth.getYear()).toString();
+	return moment(this.date_of_birth).format('MMMM Do, YYYY') + ' - ' +
+		(this.date_of_death ? moment(this.date_of_death).format('MMMM Do, YYYY') : ' ');
+});
+
+AuthorSchema.virtual('date_of_birth_formatted').get(function() {
+	return moment(this.date_of_birth).format('MMMM Do, YYYY');
+});
+
+AuthorSchema.virtual('date_of_death_formatted').get(function() {
+	if (this.date_of_death)
+		return moment(this.date_of_death).format('MMMM Do, YYYY');
 });
 
 AuthorSchema.virtual('url').get(function() {

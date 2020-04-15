@@ -9,6 +9,7 @@ module.exports.bookinstance_list = (req, res, next) => {
 		.populate('book')
 		.exec((err, bookinstance_list) => {
 			if (err) { return next(err); }
+			bookinstance_list.sort((i1, i2) => i1.book.title.localeCompare(i2.book.title));
 			res.render('bookinstance_list',
 					   { title: 'Book Instance List', instances: bookinstance_list });
 		});
@@ -61,13 +62,46 @@ module.exports.bookinstance_create_post = [
 	}
 ];
 
-module.exports.bookinstance_update_get = (req, res) => {
-	res.send('NOT IMPLEMENTED: Bookinstance update GET');
+module.exports.bookinstance_update_get = (req, res, next) => {
+	async.parallel({
+		instance: (cb) => BookInstance.findById(req.params.id).exec(cb),
+		books: (cb) => Book.find({}).exec(cb)
+	}, (err, results) => {
+		if (err) { return next(err); }
+		res.render('bookinstance_form', {
+			title: 'Update Book Instance', books: results.books,
+			instance: results.instance });
+	});
 };
 
-module.exports.bookinstance_update_post = (req, res) => {
-	res.send('NOT IMPLEMENTED: Bookinstance update POST');
-};
+module.exports.bookinstance_update_post = [
+	validator.body('imprint').trim().isLength({ min: 1 }).withMessage('Imprint is required').escape(),
+	validator.body('due_back').trim().optional({ checkFalsy: true })
+		.isISO8601().withMessage('Invalid date').escape(),
+	(req, res, next) => {
+		const errors = validator.validationResult(req);
+		const bookinstance = new BookInstance({
+			book: req.body.book,
+			imprint: req.body.imprint,
+			due_back: req.body.due_back,
+			status: req.body.status,
+			_id: req.params.id });
+		if (!errors.isEmpty()) {
+			Book.find({}).exec((err, book_list) => {
+				res.render('bookinstance_form', {
+					title: 'Create Book Instance',
+					books: book_list,
+					instance: bookinstance,
+					errors: errors.array() });
+			});
+			return ;
+		}
+		BookInstance.findByIdAndUpdate(req.params.id, bookinstance, {}, (err, theInstance) => {
+			if (err) { return next(err); }
+			res.redirect(theInstance.url);
+		});
+	}
+]
 
 module.exports.bookinstance_delete_get = (req, res, next) => {
 	BookInstance.findById(req.params.id)

@@ -9,9 +9,9 @@ block content
         for book in books
           option(value=book._id) #{book.title}
       label(for="imprint") Imprint:
-      input#imprint.form-control(name="imprint", type="text", require="true", placeholder="Tor Books")
+      input#imprint.form-control(name="imprint", type="text", require="true", placeholder="Tor Books", value=(undefined==instance ? "" : instance.imprint))
       label(for="due_back") Date when book available:
-      input#due_back.form-control(name="due_back", type="text", placeholder="yyyy-mm-dd")
+      input#due_back.form-control(name="due_back", type="text", placeholder="yyyy-mm-dd", value=(undefined==instance ? "" : instance.due_back_formatted))
       label(for="status") Status:
       select#stauts.form-control(name="status", type="select", require="true")
         option(value="Available") Available

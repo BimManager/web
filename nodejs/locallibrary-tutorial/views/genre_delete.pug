@@ -1,0 +1,17 @@
+extends layout
+
+block content
+  h1= title
+  if books
+    hr
+    h4 First up, get rid of these books
+    ul
+      for book in books
+        li
+          a(href=book.url) #{book.title}
+  else
+    p #[strong Are you certain that you wish to delete this genre?]
+    form(method="POST", action="")
+      div.form-group
+        input#name.control-form(type="hidden")
+      button.btn.btn-primary(type="submit") Delete

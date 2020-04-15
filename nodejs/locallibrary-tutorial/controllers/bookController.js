@@ -33,6 +33,7 @@ module.exports.book_list = (req, res, next) => {
 		.populate('author')
 		.exec((err, book_list) => {
 			if (err) { return next(err); }
+			book_list.sort((b1, b2) => b1.title.localeCompare(b2.title));
 			res.render('book_list', { title: 'Book List', books: book_list });
 		});
 };
@@ -116,7 +117,7 @@ module.exports.book_update_get = (req, res, next) => {
 			else
 				results.genre_list[i].checked = false;
 		}				   
-		res.render('book_update', {
+		res.render('book_form', {
 			title: 'Update Book', book: results.book, authors: results.author_list,
 			genres: results.genre_list });
 	});
@@ -128,7 +129,6 @@ module.exports.book_update_post = [
 			if (undefined === typeof req.body.genre) { req.body.genre = []; }
 			else { req.body.genre = new Array(req.body.genre); }
 		}
-		console.log(req.body.genre);
 		next();
 	},
 	validator.check('title').trim().isLength({ min: 1 }).withMessage('Title is required'),
@@ -146,14 +146,12 @@ module.exports.book_update_post = [
 			genre: req.body.genre,
 			_id: req.params.id
 		});
-		console.log(book);
 		if (!errors.isEmpty()) {
-			console.log('errors');
 			async.parallel({
 				authors: (cb) => Author.find(cb),
 				genres: (cb) => Genre.find(cb),
 			}, (err, results) => {
-				res.render('book_update', {
+				res.render('book_form', {
 					title: 'Update Book', book: book, authors: results.authors,
 					genres: results.genres, errors: errors.array() });
 			});
