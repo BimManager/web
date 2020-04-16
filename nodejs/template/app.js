@@ -19,13 +19,16 @@ const path = require('path');
 
 const config = require('./config');
 
+const dummyRouter = require('./routes/dummy');
+
 const app = express();
 
 app.set('port', config.port);
 app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'jade');
+app.set('view engine', 'pug');
 
 app.use(express.static(path.join(__dirname, 'public')));
+app.use('/dummy', dummyRouter);
 
 /* send a static html */
 app.get('/', (req, res) => {
@@ -33,7 +36,7 @@ app.get('/', (req, res) => {
 });
 
 /* render a jade file */
-app.get('/jade', (req, res) => {
+app.get('/pug', (req, res) => {
     res.render('index');
 });
 
