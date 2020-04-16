@@ -7,6 +7,7 @@ const config = require('./config');
 
 const oauthRouter = require('./routes/oauth');
 const ossRouter = require('./routes/oss');
+const modelderivativeRouter = require('./routes/modelderivative');
 
 const app = express();
 
@@ -17,10 +18,10 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
-app.get('/', (req, res) => { res.send('home'); });
+//app.get('/', (req, res) => { res.send('home'); });
 app.use('/api/forge/oauth', oauthRouter);
 app.use('/api/forge/oss', ossRouter);
-app.all('/api/forge/modelderivative', require('./routes/modelderivative'));
+app.use('/api/forge/modelderivative', modelderivativeRouter);
 app.use((req, res) => {
 	res.send('404 Not Found');
 });
