@@ -1,1 +1,0 @@
-curl -X POST https://developer.api.autodesk.com/authentication/v1/authenticate -H "Content-Type: application/x-www-form-urlencoded" -d "client_id=$CLIENT_ID" -d "client_secret=$CLIENT_SECRET" -d "grant_type=client_credentials" -d scope "data:read%20data:write" | export TOKEN=$(jq .access_token)
