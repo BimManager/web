@@ -1,0 +1,27 @@
+<!doctype html>
+<html>
+  <head>
+	<title>Getting started with AJAX</title>
+  </head>
+  <body>
+	<div id="response"></div>
+	<button id="ajaxBtn">Click Me!</button>
+	<script>
+	  const btn = document.getElementById("ajaxBtn");
+	  btn.onclick = () => {
+		  const xhr = new XMLHttpRequest();
+		  //xhr.setRequestHeader('Origin', 'https://google.com');
+		  xhr.onreadystatechange = () => {
+			  console.log(`state: ${xhr.readyState} status: ${xhr.status}`);
+			  if (xhr.DONE == xhr.readyState && 200 == xhr.status) {
+				  const div = document.getElementById("response");
+				  div.innerHTML = xhr.responseText;
+				  console.log(xhr.responseText);
+			  }
+		  };
+		  xhr.open("GET", "http://localhost:3000");
+		  xhr.send();
+	  };
+	  </script>
+  </body>
+<html>

@@ -4,26 +4,27 @@ const client_id = process.env.FORGE_CLIENT_ID;
 const client_secret = process.env.FORGE_CLIENT_SECRET;
 const autoRefresh = false;
 
-const FORGE_CLIENT_ID="bKJaO9pXn9yPYyQGGUteHGswhNABn96w";
-const FORGE_CLIENT_SECRET="rStRbj5zOfYoAmFM";
-
-//console.log(client_id);
-//console.log(client_secret);
-console.log(FORGE_CLIENT_ID);
-console.log(FORGE_CLIENT_SECRET);
-
-const oAuth2TwoLegged = new forgeSDK.AuthClientTwoLegged(
-    //client_id, client_secret, ["data:read", "data:write"],
-    FORGE_CLIENT_ID, FORGE_CLIENT_SECRET, ["data:read", "data:write"],
+const oauthClient = new forgeSDK.AuthClientTwoLegged(
+    client_id, client_secret, ["data:read", "data:write", 'bucket:read', 'bucket:delete'],
     autoRefresh);
+const bucketsClient = new forgeSDK.BucketsApi();
 
-oAuth2TwoLegged.authenticate().then((credentials) => {
-    console.log(credentials)
-    let token = credentials.access_token;
-    console.log(token);
+let credentials = null;
+
+oauthClient.authenticate().then((credentials) => {
+	console.log(credentials);
+	bucketsClient.getBuckets({}, oauthClient, credentials)
+	.then((res) => {
+		console.log(res.body.items);
+		console.log(res.body.items[0].bucketKey);
+		bucketsClient.deleteBucket(res.body.items[0].bucketKey, oauthClient, credentials)
+			.then((res) => {
+				console.log(res);
+			}, (err) => console.log(err));
+	}, (err) => {
+		console.log(err);
+	});
 }, (err) => {
     console.error(err);
 });
-
-
 

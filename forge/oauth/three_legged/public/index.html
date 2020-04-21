@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+  <head>
+	<title>Authorization</title>
+  </head>
+  <body>
+	<form action="/" method="GET">
+	  <label for="client_id">Client Id
+		<input id="client_id" name="client_id" type="text">
+	  </label>
+	  <button id="generate" type="button">Submit</button>
+	</form>
+	<a id="auth_link">Click to authenticate</a>
+	<script>
+	  document.getElementById("generate").onclick = function() {
+		  const client_id = document.getElementById("client_id").value;
+		  console.log(client_id);
+	  const url = `https://developer.api.autodesk.com/authentication/v1/authorize?response_type=code&client_id=${client_id}&redirect_uri=http%3A%2F%2F127.0.0.1%3A3000%2Foauth&scope=data:read`
+	  console.log(url);
+		  document.getElementById("auth_link").href = url;
+	  }
+	</script>
+  </body>
+  </html>
