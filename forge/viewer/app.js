@@ -9,6 +9,12 @@ const oauthRouter = require('./routes/oauth');
 const ossRouter = require('./routes/oss');
 const modelderivativeRouter = require('./routes/modelderivative');
 
+if (undefined == config.credentials.client_id
+	|| undefined == config.credentials.client_secret) {
+	console.log(`FORGE_CLIENT_ID or FORGE_CLIENT_SECRET is not defined.`);
+	return ;
+}
+
 const app = express();
 
 app.set('views', path.join(__dirname, 'views'));
