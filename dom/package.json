@@ -1,0 +1,15 @@
+{
+  "name": "dom",
+  "version": "1.0.0",
+  "description": "the exporation of DOM objects",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "kkozlov",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.17.1",
+    "nodemon": "^2.0.12"
+  }
+}

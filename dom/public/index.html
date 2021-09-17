@@ -1,0 +1,57 @@
+
+<p>
+  <html>
+  <head>
+    <title>Dom Exploration</title>
+  </head>
+  <body>
+    <h1>Dom Exploration</h1>
+    <div id="demo"></div>
+    <button onclick="onClick()">Click</button><br>
+    <button onclick="onGetRequest()">Make GET request</button>
+    <button onclick="onPostRequest()">Make POST request</button>
+
+    <form action="/api" method="post">
+      <label for="fname">First Name:</label><br>
+      <input type="text" id="fname" name="firstName" value="n/a"><br>
+      <label for="lname">Last Name:</label><br>
+      <input type="text" id="lnamae" name="lastName" 
+      <input type="submit" value="Submit">
+    </form>
+
+    <script>
+      function onClick() {
+          console.log("I have been clicked");
+          const div = document.getElementById("demo");
+          div.innerHTML = "<p>Foo, bar, baz</p>";
+      }
+      function onGetRequest() {
+          console.log("making a GET request");
+          const xhr = new XMLHttpRequest();
+          xhr.onload = function() {
+              if (4 === this.readyState
+                  && 200 === this.status) {
+                  console.log(this.responseText);
+                  const data = JSON.parse(this.responseText);
+                  document.getElementById("demo").innerHTML = `status: ${data.status}`;
+              }
+          }
+          xhr.open("GET", "http://localhost:3001/api");
+          xhr.send();
+      }
+
+      function onPostRequest() {
+          const xhr = new XMLHttpRequest();
+          xhr.onload = function() {
+              if (4 === this.readyState
+                  && 200 === this.status) {
+                  console.log(this.responseText);
+              }
+          };
+          xhr.open("POST", "http://localhost:3001/api");
+          xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+          xhr.send("name=foo&age=25");
+      }
+    </script>
+  </body>
+</html>
