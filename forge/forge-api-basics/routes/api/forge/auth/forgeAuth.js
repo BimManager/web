@@ -1,7 +1,7 @@
 const https = require('https');
 const qs = require('querystring');
 
-const httpRequests = require('../../../../helpers/httpRequests');
+const httpClient = require('../../../../helpers/httpClient');
 
 /*
 ** {
@@ -24,17 +24,16 @@ function forgeAuth() {
         'Content-Type': 'application/x-www-form-urlencoded'
       }
     };
-    return httpRequests.post(options, qs.stringify(credentials))
-      .then(function(token) {
-        _token = token;
+    return httpClient.makeHttpRequest(options, qs.stringify(credentials))
+      .then(function(res) {
+        _token = JSON.parse(res.body);
         setTimeout(function() {
           _token = null
-        }, (JSON.parse(token).expires_in - 60) * 1000);
-        return Promise.resolve(token);
+        }, (_token.expires_in - 60) * 1000);
+        return Promise.resolve(_token);
       })
       .catch(function(err) {
-        console.log("error: " + err);
-        //return Promise.resolve(err);
+        return Promise.resolve(err);
       });
   }
   return {

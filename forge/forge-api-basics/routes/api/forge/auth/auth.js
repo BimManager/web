@@ -5,7 +5,19 @@ const forgeAuth = require('./forgeAuth');
 
 const router = express.Router();
 
-router.route('/token')
+router.use(function(req, res, next) {
+  forgeAuth.get2LeggedToken(config.credentials)
+    .then(function(token) {
+      req.token = token;
+      next();
+    })
+    .catch(function(err) {
+      res.setStatus = 500;
+      res.json(err);
+    });
+});
+
+/*router.route('/token')
   .get(function(req, res) {
     forgeAuth.get2LeggedToken(config.credentials)
       .then(function(token) {
@@ -14,6 +26,6 @@ router.route('/token')
       .catch(function(err) {
         res.json(err);
       });
-  });
+  });*/
 
 module.exports = router;

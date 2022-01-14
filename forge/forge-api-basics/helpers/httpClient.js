@@ -12,8 +12,9 @@
 
 const https = require('https');
 
-function makeHttpRequest(options, body = null) {
+function _makeHttpRequest(options, body = null) {
   console.log(options);
+  if (body) console.log(body);
   return new Promise(function(resolve, reject) {
     const req = https.request(options, function(res) {
       let body = [];
@@ -21,7 +22,9 @@ function makeHttpRequest(options, body = null) {
         body.push(chunk);
       });
       res.on('end', function() {
-        resolve(Buffer.concat(body).toString());
+        res.body = Buffer.concat(body).toString();
+        resolve(res);
+        //resolve(Buffer.concat(body).toString());
       });
     });
     req.on('error', function(err) { reject(err); });
@@ -30,15 +33,6 @@ function makeHttpRequest(options, body = null) {
   });
 }
 
-function get(options) {
-  return makeHttpRequest(options);
-}
-
-function post(options, body) {
-  return makeHttpRequest(options, body);
-}
-
 module.exports = {
-  get: get,
-  post: post
+  makeHttpRequest : _makeHttpRequest
 };

@@ -37,8 +37,8 @@ app.get('/', function(req, res) {
   res.json({ info: 'the server is up' });
 });
 
-app.use('/api/forge/auth', authRouter);
-app.use('/api/forge/oss', dataRouter);
+//app.use('/api/forge/auth', authRouter);
+app.use('/api/forge/oss', authRouter, dataRouter);
 
 app.use(function(req, res, next) {
   const err = new Error('Not Found');
