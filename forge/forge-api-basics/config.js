@@ -4,6 +4,6 @@ module.exports = {
     client_secret: process.env.FORGE_CLIENT_SECRET,
     grant_type: 'client_credentials',
     scope: 'data:create data:write data:read \
-            bucket:create bucket:read bucket:delete'
+       bucket:create bucket:read bucket:delete'
   }
 };

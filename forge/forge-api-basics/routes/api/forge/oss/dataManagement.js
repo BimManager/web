@@ -1,5 +1,6 @@
 const express = require('express');
 const multer = require('multer');
+const busboy = require('busboy');
 
 const config = require('../../../../config');
 const httpClient = require('../../../../helpers/httpClient');
@@ -149,6 +150,40 @@ router
               res.json(err);
             });
         })
+  .post('/buckets/:bucketKey/objects/:objectName/resumable', function(req, res) {
+    const bb = busboy({ headers: req.headers });
+    const fileSize = req.get('Content-Length');
+    bb.on('file', (name, file, info) => {
+      console.log(`File: ${name} ${file} ${info}`);
+      let uploaded = 0;
+      let block = '';
+      file.on('data', (chunk) => {
+        if (block.length >= 5 * 1024 * 1024) {
+          console.log(`uploading ${uploaded}-${uploaded + block.length - 1}/${fileSize}`);
+          uploaded += block.length;
+          block = '';
+        } else {
+          block += chunk;
+        }
+        //console.log('chunk: ' + chunk.length);
+      });
+      file.on('end', () => {
+        if (block.length) {
+          console.log(`uploading ${uploaded}-${fileSize - 1}/${fileSize}`);
+        }
+        console.log('done uploading the file');
+      });
+      file.resume();
+    });
+    bb.on('field', (name, value, info) => {
+      console.log(`Field: ${name} ${value} ${info}`);
+    });
+    bb.on('finish', () => {
+      res.writeHeader(200, { 'Connection': 'close' });
+      res.end();
+    });
+    req.pipe(bb);
+  })
   .delete('/buckets/:bucketKey/objects/:objectName', function(req, res) {
     httpClient.makeHttpRequest({
       hostname: 'developer.api.autodesk.com',
@@ -169,5 +204,27 @@ router
         res.json(err);
       });
   })
+
+router
+  .get('/buckets/:bucketKey/objects/:objectKey/details', function(req, res) {
+    httpClient.makeHttpRequest({
+      hostname: 'developer.api.autodesk.com',
+      port: 443,
+      path: `/oss/v2/buckets/${req.params["bucketKey"]}/objects`
+        + `/${req.params["objectKey"]}/details`,
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${req.token.access_token}`
+      }
+    })
+      .then(function(objectsRes) {
+        res.statusCode = objectsRes.statusCode;
+        res.json(objectsRes.body);
+      })
+      .catch(function(err) {
+        res.statusCode = 500;
+        res.json(err);
+      });
+  });
 
 module.exports = router;
