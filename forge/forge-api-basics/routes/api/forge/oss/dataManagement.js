@@ -4,150 +4,116 @@ const busboy = require('busboy');
 
 const config = require('../../../../config');
 const httpClient = require('../../../../helpers/httpClient');
-const forgeAuth = require('../auth/forgeAuth');
 
 const router = express.Router();
 const upload = multer({ storage: multer.memoryStorage() });
 
 router.route('/buckets')
   .get(function(req, res) {
-    httpClient.makeHttpRequest({
-      hostname: 'developer.api.autodesk.com',
-      port: 443,
-      method: 'GET',
+    options = Object.assign({}, config.options, {      
       path: '/oss/v2/buckets',
-      headers: {
-        'Authorization': `Bearer ${req.token.access_token}`
-      }
-    })
+      method: 'GET'
+    });
+    httpClient.makeHttpRequest(options)
       .then(function(bucketsRes) {
-        res.statusCode = bucketsRes.statusCode;
-        res.json(bucketsRes.body);
+        httpClient.sendResponseBasedOnIncomingMessage(res, bucketsRes);
       })
       .catch(function(err) {
-        res.json(err);
+        httpClient.respondWithError(res, err);
       });
   })
   .post(function(req, res) {    
-    httpClient.makeHttpRequest({
-      hostname: 'developer.api.autodesk.com',
-      port: 443,
-      method: 'POST',
+    options = Object.assign({}, config.options, {
       path: '/oss/v2/buckets',
-      headers: {
-        'Authorization': `Bearer ${req.token.access_token}`,
-        'Content-Type': 'application/json',
-        'x-ads-region': 'US'
-      }
-    }, JSON.stringify(req.body))
+      method: 'POST',
+    });
+    Object.assign(options.headers, {
+      'Content-Type': 'application/json',
+      'x-ads-region': 'US'
+    });
+    httpClient.makeHttpRequest(options, JSON.stringify(req.body))
       .then(function(bucketsRes) {
-        res.statusCode = bucketsRes.statusCode;
-        res.json(bucketsRes.body);
+        httpClient.sendResponseBasedOnIncomingMessage(res, bucketsRes);
       })
       .catch(function(err) {
-        res.json(err);
+        httpClient.respondWithError(res, err);
       });
   });
 
 router.get('/buckets/:bucketKey/details', function(req, res) {
-  httpClient.makeHttpRequest({
-    hostname: 'developer.api.autodesk.com',
-    port: 443,
+  const options = Object.assign({}, config.options, {
     path: `/oss/v2/buckets/${req.params.bucketKey}/details`,
     method: 'GET',
-    headers: {
-      'Authorization': `Bearer ${req.token.access_token}`
-    }
-  })
+  });
+  httpClient.makeHttpRequest(options)
     .then(function(bucketsRes) {
-      res.statusCode = bucketsRes.statusCode;
-      res.json(bucketsRes.body);
+      httpClient.sendResponseBasedOnIncomingMessage(res, bucketsRes);
     })
     .catch(function(err) {
-      res.json(err);
+      httpClient.responseWithError(res, err);
     });    
 });
 
 router.delete('/buckets/:bucketKey', function(req, res) {
-  httpClient.makeHttpRequest({
-    hostname: 'developer.api.autodesk.com',
-    port: 443,
+  const options = Object.assign({}, config.options, {
     path: `/oss/v2/buckets/${req.params["bucketKey"]}`,
-    method: 'DELETE',
-    headers: {
-      'Authorization': `Bearer ${req.token.access_token}`
-    }
-  })
+    method: 'DELETE'
+  });
+  httpClient.makeHttpRequest(options)
     .then(function(bucketsRes) {
-      res.statusCode = bucketsRes.statusCode;
-      res.json(bucketsRes.body);
+      httpClient.sendResponseBasedOnIncomingMessage(res, bucketsRes);
     })
     .catch(function(err) {
-      res.json(err);
+      httpClient.respondWithError(res, err);
     });
 });
 
 router.get('/buckets/:bucketKey/objects', function(req, res) {
-  httpClient.makeHttpRequest({
-    hostname: 'developer.api.autodesk.com',
-    port: 443,
+  const options = Object.assign({}, config.options, {
     path: `/oss/v2/buckets/${req.params["bucketKey"]}/objects`,
-    method: 'GET',
-    headers: {
-      'Authorization': `Bearer ${req.token.access_token}`
-    }
-  })
+    method: 'GET'
+  });
+  httpClient.makeHttpRequest(options)
     .then(function(objectsRes) {
-      res.statusCode = objectsRes.statusCode;
-      res.json(objectsRes.body);
+      httpClient.sendResponseBasedOnIncomingMessage(res, objectsRes);
     })
     .catch(function(err) {
-      res.json(err);
+      httpClient.respondWithError(res, err);
     });
 });
 
 router
   .get('/buckets/:bucketKey/objects/:objectName', function(req, res) {
-    httpClient.makeHttpRequest({
-      hostname: 'developer.api.autodesk.com',
-      port: 443,
+    const options = Object.assign({}, config.options, {
       path: `/oss/v2/buckets/${req.params["bucketKey"]}/`
         + `objects/${req.params["objectName"]}`,
-      method: 'GET',
-      headers: {
-        'Authorization': `Bearer ${req.token.access_token}`,
-      }
-    })
+      method: 'GET'
+    });
+    httpClient.makeHttpRequest(options)
       .then(function(objectsRes) {
-        res.statusCode = objectsRes.statusCode;
-        res.json(objectsRes.body);
+        httpClient.sendResponseBasedOnIncomingMessage(res, objectsRes);
       })
       .catch(function(err) {
-        res.statusCode = 500;
-        res.json(err);
+        httpClient.respondWithError(res, err);
       });
   })
   .post('/buckets/:bucketKey/objects/:objectName',
         upload.single('file'), function(req, res) {
-          httpClient.makeHttpRequest({
-            hostname: 'developer.api.autodesk.com',
-            port: 443,
+          const options = Object.assign({}, config.options, {
             path: `/oss/v2/buckets/${req.params["bucketKey"]}/`
               + `objects/${req.params["objectName"]}`,
-            method: 'PUT',
-            headers: {
-              'Authorization': `Bearer ${req.token.access_token}`,
-              'Content-Type': req.file.mimetype,
-              'Content-Length': req.file.size
-            }
-          }, req.file.buffer)
+            method: 'PUT'
+          });
+          Object.assign(options.headers, {
+            'Content-Type': req.file.mimetype,
+            'Content-Length': req.file.size
+          });
+          httpClient.makeHttpRequest(options, req.file.buffer)
             .then(function(uploadRes) {
-              res.statusCode = uploadRes.statusCode;
-              res.json(uploadRes.body);
+              httpClient.sendResponseBasedOnIncomingMessage(res, uploadRes);
             })
             .catch(function(err) {
-              res.statusCode = 500;
-              res.json(err);
+              httpClient.respondWithError(res, err);
             });
         })
   .post('/buckets/:bucketKey/objects/:objectName/resumable', function(req, res) {
@@ -185,45 +151,33 @@ router
     req.pipe(bb);
   })
   .delete('/buckets/:bucketKey/objects/:objectName', function(req, res) {
-    httpClient.makeHttpRequest({
-      hostname: 'developer.api.autodesk.com',
-      port: 443,
+    const options = Object.assign({}, config.options, {
       path: `/oss/v2/buckets/${req.params["bucketKey"]}/`
         + `objects/${req.params["objectName"]}`,
-      method: 'DELETE',
-      headers: {
-        'Authorization': `Bearer ${req.token.access_token}`,
-      }
-    })
+      method: 'DELETE'
+    });
+    httpClient.makeHttpRequest(options)
       .then(function(uploadRes) {
-        res.statusCode = uploadRes.statusCode;
-        res.json(uploadRes.body);
+        httpClient.sendResponseBasedOnIncomingMessage(res, uploadRes);
       })
       .catch(function(err) {
-        res.statusCode = 500;
-        res.json(err);
+        httpClient.respondWithError(res, err);
       });
   })
 
 router
   .get('/buckets/:bucketKey/objects/:objectKey/details', function(req, res) {
-    httpClient.makeHttpRequest({
-      hostname: 'developer.api.autodesk.com',
-      port: 443,
+    const options = Object.assign({}, config.options, {
       path: `/oss/v2/buckets/${req.params["bucketKey"]}/objects`
         + `/${req.params["objectKey"]}/details`,
-      method: 'GET',
-      headers: {
-        'Authorization': `Bearer ${req.token.access_token}`
-      }
-    })
+      method: 'GET'
+    });
+    httpClient.makeHttpRequest(options)
       .then(function(objectsRes) {
-        res.statusCode = objectsRes.statusCode;
-        res.json(objectsRes.body);
+        httpClient.sendResponseBasedOnIncomingMessage(res, objectsRes);
       })
       .catch(function(err) {
-        res.statusCode = 500;
-        res.json(err);
+        httpClient.respondWithError(res, err);
       });
   });
 

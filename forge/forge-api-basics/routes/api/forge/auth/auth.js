@@ -9,6 +9,11 @@ const router = express.Router();
 router.authWith2LeggedToken = function(req, res, next) {
   forgeAuth.get2LeggedToken(config.credentials)
     .then(function(token) {
+      Object.assign(config.options, {
+        headers: {
+          'Authorization': `Bearer ${token.access_token}`
+        }
+      });
       req.token = token;
       next();
     })

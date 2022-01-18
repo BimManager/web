@@ -1,44 +1,33 @@
 const express = require('express');
 
+const config = require('../../../../config');
 const httpClient = require('../../../../helpers/httpClient');
 
 const router = express.Router();
 
 router.get('/formats', function(req, res) {
-  httpClient.makeHttpRequest({
-    hostname: 'developer.api.autodesk.com',
-    port: 443,
+  const options = Object.assign({}, config.options, {
     path: '/modelderivative/v2/designdata/formats',
-    method: 'GET',
-    headers: {
-      'Authorization': `Bearer ${req.token.access_token}`
-    }
-  })
+    method: 'GET'
+  });
+  httpClient.makeHttpRequest(options)
     .then(function(formatsRes) {
-      res.statusCode = formatsRes.statusCode;
-      res.set('Content-Type', 'application/json');
-      res.set('Content-Length', formatsRes.body.length);
-      res.send(formatsRes.body);
+      httpClient.sendResponseBasedOnIncomingMessage(res, formatsRes);
     })
     .catch(function(err) {
-      res.statusCode = 500;
-      res.json(err);
+      httpClient.respondWithError(res, err);
     });
 });
 
 router.post('/job', function(req, res) {
-  console.log(req.body.url);
-  console.log(req.body.formats);
-  httpClient.makeHttpRequest({
-    hostname: 'developer.api.autodesk.com',
-    port: 443,
+  const options = Object.assign({}, config.options, {
     path: '/modelderivative/v2/designdata/job',
     method: 'POST',
-    headers: {
-      'Authorization': `Bearer ${req.token.access_token}`,
-      'Content-Type': 'application/json'      
-    }
-  }, JSON.stringify({
+  });
+  Object.assign(options.headers, {
+    'Content-Type': 'application/json'
+  })
+  httpClient.makeHttpRequest(options, JSON.stringify({
     input: {
       urn: Buffer.from(req.body["urn"]).toString('base64')
     },
@@ -47,104 +36,73 @@ router.post('/job', function(req, res) {
     }
   }))
     .then(function(jobRes) {
-      res.statusCode = jobRes.statusCode;
-      res.set('Content-Type', 'application/json');
-      res.set('Content-Length', jobRes.body.length);
-      res.send(jobRes.body);
+      httpClient.sendResponseBasedOnIncomingMessage(res, jobRes);
     })
     .catch(function(err) {
-      res.statusCode = 500;
-      res.json(err);
+      httpClient.respondWithError(res, err);
     });
 });
 
-router.get('/:urn/manifest', function(req, res) {
-  httpClient.makeHttpRequest({
-    hostname: 'developer.api.autodesk.com',
-    port: 443,
-    path: `/modelderivative/v2/designdata/${req.params["urn"]}/manifest`,
-    method: 'GET',
-    headers: {
-      'Authorization': `Bearer ${req.token.access_token}`
-    }
-  })
-    .then(function(manifestRes) {
-      res.statusCode = manifestRes.statusCode;
-      res.set('Content-Type', 'application/json');
-      res.set('Content-Length', manifestRes.body.length);
-      res.send(manifestRes.body);
-    })
-    .catch(function(err) {
-      res.statusCode = 500;
-      res.json(err);
+router.route('/:urn/manifest/:derivativeurn?')
+  .get(function(req, res) {
+    console.log(req.params['derivativeurn']);
+    const options = Object.assign({}, config.options, {
+      path: `/modelderivative/v2/designdata/${req.params["urn"]}/manifest`
+        + (req.params['derivativeurn']
+           ? `/${encodeURIComponent(req.params['derivativeurn'])}` : ''),
+      method: 'GET'
+    });
+    httpClient.makeHttpRequest(options)
+      .then(function(manifestRes) {
+        httpClient.sendResponseBasedOnIncomingMessage(res, manifestRes);
+      })
+      .catch(function(err) {
+        httpClient.respondWithError(res, err);
     });
 });
+
 
 router.get('/:urn/thumbnail', function(req, res) {
-  httpClient.makeHttpRequest({
-    hostname: 'developer.api.autodesk.com',
-    port: 443,
+  const options = Object.assign({}, config.options, {
     path: `/modelderivative/v2/designdata/${req.params["urn"]}/thumbnail`,
-    method: 'GET',
-    headers: {
-      'Authorization': `Bearer ${req.token.access_token}`
-    }
-  })
+    method: 'GET'
+  });
+  httpClient.makeHttpRequest(options)
     .then(function(thumbnailRes) {
-      res.statusCode = thumbnailRes.statusCode;
-      res.set('Content-Type', thumbnailRes.headers["content-type"]);
-      res.set('Content-Length', thumbnailRes.body.length);
-      res.send(thumbnailRes.body);
+      httpClient.sendResponseBasedOnIncomingMessage(res, thumbnailRes);
     })
     .catch(function(err) {
-      res.statusCode = 500;
-      res.json(err);
+      httpClient.respondWithError(res, err);
     });
 });
 
 router.get('/:urn/metadata/:guid?', function(req, res) {
-  httpClient.makeHttpRequest({
-    hostname: 'developer.api.autodesk.com',
-    port: 443,
+  const options = Object.assign({}, config.options, {
     path: `/modelderivative/v2/designdata/${req.params["urn"]}/metadata`
       + (req.params.guid ? `/${req.params.guid}` : ''),
-    method: 'GET',
-    headers: {
-      'Authorization': `Bearer ${req.token.access_token}`
-    }
-  })
+    method: 'GET'
+  });
+  httpClient.makeHttpRequest(options)
     .then(function(metadataRes) {
-      res.statusCode = metadataRes.statusCode;
-      res.set('Content-Type', metadataRes.headers["content-type"]);
-      res.set('Content-Length', metadataRes.body.length);
-      res.send(metadataRes.body);
+      httpClient.sendResponseBasedOnIncomingMessage(res, metadataRes);
     })
     .catch(function(err) {
-      res.statusCode = 500;
-      res.json(err);
+      httpClient.respondWithError(res, err);
     });
 });
 
 router.get('/:urn/metadata/:guid/properties', function(req, res) {
-  httpClient.makeHttpRequest({
-    hostname: 'developer.api.autodesk.com',
-    port: 443,
+  const options = Object.assign({}, config.options, {
     path: `/modelderivative/v2/designdata/${req.params["urn"]}/metadata`
       + `/${req.params.guid}/properties`,
-    method: 'GET',
-    headers: {
-      'Authorization': `Bearer ${req.token.access_token}`
-    }
-  })
-    .then(function(metadataRes) {
-      res.statusCode = metadataRes.statusCode;
-      res.set('Content-Type', 'application/json');
-      res.set('Content-Length', metadataRes.body.length);
-      res.send(metadataRes.body);
+    method: 'GET'
+  });
+  httpClient.makeHttpRequest(options)
+    .then(function(propertiesRes) {
+      httpClient.sendResponseBasedOnIncomingMessage(res, propertiesRes);
     })
     .catch(function(err) {
-      res.statusCode = 500;
-      res.json(err);
+      httpClient.respondWithError(res, err);
     });
 });
 

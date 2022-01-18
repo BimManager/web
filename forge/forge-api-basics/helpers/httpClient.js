@@ -22,9 +22,10 @@ function _makeHttpRequest(options, body = null) {
         body.push(chunk);
       });
       res.on('end', function() {
-        res.body = Buffer.concat(body).toString();
+        body = Buffer.concat(body);
+        res.body = /text|json/.test(res.headers['content-type'])
+          ? body.toString() : body;
         resolve(res);
-        //resolve(Buffer.concat(body).toString());
       });
     });
     req.on('error', function(err) { reject(err); });
@@ -33,6 +34,25 @@ function _makeHttpRequest(options, body = null) {
   });
 }
 
+function _sendResponseBasedOnIncomingMessage(response, incomingMessage) {
+  console.log('Content-Type: ' + (incomingMessage.headers["content-type"]
+                                  || 'application/octet-stream'));
+  response.statusCode = incomingMessage.statusCode;
+  response.set('Content-Type', incomingMessage.headers["content-type"]
+               || 'application/octet-stream');
+  response.set('Content-Length', incomingMessage.headers["content-length"]);
+  response.send(incomingMessage.body);
+}
+
+function _respondWithError(response, error) {
+  response.statusCode = error && error.statusCode || 500;
+  const message = { errorMessage: error && error.message || 'Unknown Error' }
+  if (error && error.stack) { console.error(error.stack); }
+  response.json(message);
+}
+
 module.exports = {
-  makeHttpRequest : _makeHttpRequest
+  makeHttpRequest : _makeHttpRequest,
+  sendResponseBasedOnIncomingMessage: _sendResponseBasedOnIncomingMessage,
+  respondWithError: _respondWithError
 };
